@@ -1,15 +1,14 @@
 <script lang='ts'>
     import { Input, Button } from 'flowbite-svelte';
     import { Card } from 'flowbite-svelte';
-    import { TrashBinSolid, EditSolid } from 'flowbite-svelte-icons';
+    import { CheckCircleSolid, EditSolid } from 'flowbite-svelte-icons';
     type toDo = {
         id: string;
         name: string;
-        complete: boolean;
     }
     let addInputValue = ''
     let editInputValue = ''
-    let selectedToDo = ''
+    let selectedToDoId = ''
     let editPlaceholder = ''
     let editMode = false
     let toDos: toDo[] = []
@@ -18,15 +17,14 @@
         toDos = [...toDos, {
             id: self.crypto.randomUUID(),
             name: addInputValue,
-            complete: false
         }]
         addInputValue = ''
     }
-    const deleteToDo = (id: string) => {
+    const completeToDo = (id: string) => {
         toDos = [...toDos.filter((toDo) => toDo.id !== id)]
     }
-    const switchInputs = (id: string) => {
-        selectedToDo = id
+    const enableEditMode = (id: string) => {
+        selectedToDoId = id
         toDos.forEach((toDo) => {
             if (toDo.id === id) {
                 editPlaceholder = toDo.name
@@ -36,7 +34,7 @@
     }
     const editToDo = () => {
         toDos = [...toDos.map((toDo) => {
-            if (toDo.id === selectedToDo) {
+            if (toDo.id === selectedToDoId) {
                 return {
                     id: toDo.id,
                     name: editInputValue,
@@ -71,8 +69,8 @@
             <div class='m-2 p-2 flex justify-between'>
                 <h1>{toDo.name}</h1>
                 <div class='flex'>
-                <button on:click={() => switchInputs(toDo.id)}><EditSolid /></button>
-                <button on:click={() => deleteToDo(toDo.id)}><TrashBinSolid /></button>
+                <button on:click={() => enableEditMode(toDo.id)}><EditSolid class='hover:fill-blue-500' /></button>
+                <button on:click={() => completeToDo(toDo.id)}><CheckCircleSolid class='hover:fill-green-500' /></button>
                 </div>
             </div>
         {/each}
